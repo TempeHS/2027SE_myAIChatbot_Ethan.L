@@ -59,10 +59,41 @@ def chat():
             {"respond": "Message too long! Please keep it under 500 characters."}
         )
 
+    if check_for_crisis(user_message):
+        return jsonify({"respond": CRISIS_RESPOND})
+
     # Get the chatbot's response
     bot_respond = chatbot.get_response(user_message)
-
     return jsonify({"response": str(bot_respond)})
+
+
+CRISIS_KEYWORDS = [
+    "suicide",
+    "kill myself",
+    "end my life",
+    "self harm",
+    "dont want to live",
+    "don't want to live",
+    "want to die",
+]
+
+CRISIS_RESPOND = """I am concerned about what you've shared. Please know that you're not alone. 
+If you're in crisis, please reach out for support:
+
+- Lifeline: 13 11 14 (24/7)
+- Kids Helpline: 1800 55 1800
+- Beyond Blue: 1300 22 4636
+
+I'm just a chatbot and can't provide the support you need, but these services have trained conselors ready to help right now. """
+
+
+def check_for_crisis(message):
+    """Check if message contains crisis keywords."""
+    message_lower = message.lower()
+    for keyword in CRISIS_KEYWORDS:
+        if keyword in message_lower:
+            return True
+        return False
 
 
 if __name__ == "__main__":
